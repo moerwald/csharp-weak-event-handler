@@ -30,7 +30,7 @@ namespace WeakEventHandler.Tests
             public Sleepy(Alarm alarm)
             {
                 _alarm = alarm;
-                _alarm.Beeped += 
+                _alarm.Beeped +=
                     new WeakEventHandler<PropertyChangedEventArgs>(Alarm_Beeped).Handler;
             }
 
@@ -50,7 +50,31 @@ namespace WeakEventHandler.Tests
             alarm.Beep();
             alarm.Beep();
 
-            Assert.AreEqual(2, sleepy.SnoozeCount);
+            Assert.That(sleepy.SnoozeCount, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void ShouldAllowSubscriberReferenceToBeCollectedByGC()
+        {
+            var alarm = new Alarm();
+            var sleepyReference = null as WeakReference;
+            new Action(() =>
+            {
+                // Run in other scope so that sleepy-variable will be
+                // garbage collected
+                var sleepy =  new Sleepy(alarm);
+                alarm.Beep();
+                alarm.Beep();
+                Assert.That(sleepy.SnoozeCount, Is.EqualTo(2));
+
+                sleepyReference = new WeakReference(sleepy);
+            })();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            Assert.That(sleepyReference.Target, Is.Null);
         }
     }
 }
