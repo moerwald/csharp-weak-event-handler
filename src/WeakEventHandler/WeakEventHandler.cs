@@ -16,10 +16,10 @@ namespace WeakEventHandler
             _targetReference = new WeakReference(callback.Target, true);
         }
 
-        public void Handler (object sender, TEventArgs e)
+        public void Handler(object sender, TEventArgs e)
         {
             var target = _targetReference.Target;
-            if (target is object)
+            if (GCDidntDestroy(target))
             {
                 var callback = (Action<object, TEventArgs>)Delegate.CreateDelegate(
                     typeof(Action<object, TEventArgs>),
@@ -31,8 +31,8 @@ namespace WeakEventHandler
                     callback(sender, e);
                 }
             }
+
+            bool GCDidntDestroy(object t) => t is object;
         }
-
-
     }
 }
