@@ -14,6 +14,6 @@ jobs:
       with:
         dotnet-version: 2.2.108
     - name: Build with dotnet
-      run: dotnet build .\src\WeakEventHandler.sln --configuration Release
+      run: dotnet build ./src/WeakEventHandler.sln --configuration Release
     - name: Run tests
-      run: dotnet test .\src\WeakEventHandler.sln
+      run: dotnet test ./src/WeakEventHandler.sln
