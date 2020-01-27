@@ -19,8 +19,8 @@ namespace WeakEventHandler
             var target = _targetReference.Target;
             if (GCDidntDestroy(target))
             {
-                var callback = (Action<object, TEventArgs>)Delegate.CreateDelegate(
-                    typeof(Action<object, TEventArgs>),
+                var callback = (EventHandler<TEventArgs>)Delegate.CreateDelegate(
+                    typeof(EventHandler<TEventArgs>),
                     target,
                     _method,
                     true);
