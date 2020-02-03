@@ -7,14 +7,8 @@ namespace WeakEventHandler.Tests
         public class Alarm
         {
             public event PropertyChangedEventHandler Beeped;
-            public void Beep()
-            {
-                var handler = Beeped;
-                if (handler is object)
-                {
-                    handler(this, new PropertyChangedEventArgs("Beep"));
-                }
-            }
+
+            public void Beep() => Beeped?.Invoke(this, new PropertyChangedEventArgs("Beep"));
         }
     }
 }
