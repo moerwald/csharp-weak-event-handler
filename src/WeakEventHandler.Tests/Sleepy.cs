@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace WeakEventHandler.Tests
 {
@@ -7,19 +8,20 @@ namespace WeakEventHandler.Tests
         public class Sleepy
         {
             private readonly Alarm _alarm;
+            private PropertyChangedEventHandler _handler;
             private int _snoozeCount;
 
             public Sleepy(Alarm alarm)
             {
                 _alarm = alarm;
-                _alarm.Beeped +=
-                    new WeakEventHandler<PropertyChangedEventArgs>(Alarm_Beeped).Handler;
+                _handler = new WeakEventHandler<PropertyChangedEventArgs>(
+                                        Alarm_Beeped,
+                                        () => _alarm.Beeped -= _handler
+                                        ).Handler;
+                _alarm.Beeped += _handler ;
             }
 
-            private void Alarm_Beeped(object sender, PropertyChangedEventArgs e)
-            {
-                _snoozeCount++;
-            }
+            private void Alarm_Beeped(object sender, PropertyChangedEventArgs e) => _snoozeCount++;
 
             public int SnoozeCount => _snoozeCount;
         }
