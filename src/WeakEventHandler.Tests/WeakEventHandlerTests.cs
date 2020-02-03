@@ -38,6 +38,7 @@ namespace WeakEventHandler.Tests
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
+            // Lets check if there is not a strong reference to sleepy, if though the event was not unsubscribed
             Assert.That(sleepyReference.Target, Is.Null);
         }
 
